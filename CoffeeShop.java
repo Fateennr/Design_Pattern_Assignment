@@ -89,13 +89,46 @@ class Tea extends Drink{
     }
 }
 
-// abstract class DrinkDecorator {
-//     protected Drink drink;
+abstract class DrinkDecorator extends Drink{
+    protected Drink wrappedDrink;
 
-//     public DrinkDecorator(Drink drink) {
-//         this.drink = drink;
-//     }
-// }
+    public DrinkDecorator(Drink drink) {
+        super(drink.payment, drink.name, drink.price); // implicit constructor
+        this.wrappedDrink = drink;
+    }
+}
+
+// decorator class to add milk and sugar to the drink
+
+class MilkDecorator extends DrinkDecorator{
+    public MilkDecorator(Drink drink) {
+        super(drink);
+        this.name = drink.name + " with Milk";
+        this.price = drink.price + 50;
+    }
+
+    @Override
+    protected void addExtras() {
+        super.addExtras();
+        System.out.println("Adding milk to " + name);
+        this.price += 10;
+    }
+}
+
+class SugarDecorator extends DrinkDecorator{
+    public SugarDecorator(Drink drink) {
+        super(drink);
+        this.name = drink.name + " with Sugar";
+        this.price = drink.price + 20;
+    }
+
+    @Override
+    protected void addExtras() {
+        super.addExtras();
+        System.out.println("Adding sugar to " + name);
+        this.price += 5;
+    }
+}
 
 // abstract class DrinkFactory{
 //     public Drink order(PaymentStrategy payment, boolean addSugar, boolean addMilk){
