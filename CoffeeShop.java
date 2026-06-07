@@ -63,7 +63,7 @@ abstract class Drink{
     }
 
     protected void addExtras(){
-        System.out.println("Adding extras in a Drink " + name);
+        // System.out.println("Adding extras in a Drink " + name);
     }
 }
 
@@ -110,7 +110,7 @@ class MilkDecorator extends DrinkDecorator{
     @Override
     protected void addExtras() {
         super.addExtras();
-        System.out.println("Adding milk to " + name);
+        System.out.println("Adding extra milk to " + name);
         this.price += 10;
     }
 }
@@ -125,26 +125,54 @@ class SugarDecorator extends DrinkDecorator{
     @Override
     protected void addExtras() {
         super.addExtras();
-        System.out.println("Adding sugar to " + name);
+        System.out.println("Adding extra sugar to " + name);
         this.price += 5;
     }
 }
 
-// abstract class DrinkFactory{
-//     public Drink order(PaymentStrategy payment, boolean addSugar, boolean addMilk){
-        
-//     }
-// }
+// factory classes to create the drink objects and apply the decorator pattern to add milk and sugar to the drink
 
-// class CoffeeFactory extends DrinkFactory{
-// }
+abstract class DrinkFactory{
+
+    protected abstract Drink createDrink(PaymentStrategy payment);
+
+    public Drink order(PaymentStrategy payment, boolean addSugar, boolean addMilk){
+        Drink drink = createDrink(payment);
+        if (addSugar) {
+            drink = new SugarDecorator(drink);
+        }
+        if (addMilk) {
+            drink = new MilkDecorator(drink);
+        }
+        return drink;
+    }
+}
+
+class CoffeeFactory extends DrinkFactory{
+    @Override
+    protected Drink createDrink(PaymentStrategy payment) {
+        return new Coffee(payment);
+    }
+}
+
+class TeaFactory extends DrinkFactory{
+    @Override
+    protected Drink createDrink(PaymentStrategy payment) {
+        return new Tea(payment);
+    }
+}
 
 public class CoffeeShop {
     public static void main(String[] args) {
-        // DrinkFactory coffeeFactory = new CoffeeFactory();
+        DrinkFactory coffeeFactory = new CoffeeFactory();
 
-        // Drink order1 = coffeeFactory.order(new CashPayment(), true, false);
-        // order1.prepare();
+        Drink order1 = coffeeFactory.order(new CashPayment(), true, false);
+        order1.prepare();
+
+        System.out.println("-----------------------------");
+
+        Drink order2 = coffeeFactory.order(new CashPayment(), false, false);
+        order2.prepare();
 
         // PaymentStrategy payment = new CreditCardPayment();
         // payment.pay(300);
