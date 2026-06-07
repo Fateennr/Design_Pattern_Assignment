@@ -18,9 +18,20 @@ class CreditCardPayment implements PaymentStrategy{
     }
 }
 
+
+// template method for drink preperation
+
 abstract class Drink{
+
     protected String name;
     protected double price;
+    protected PaymentStrategy payment;
+
+    public Drink(PaymentStrategy payment, String name, double price) {
+        this.payment = payment;
+        this.name = name;
+        this.price = price;
+    }
 
     public String getName() {
         return name;
@@ -30,28 +41,53 @@ abstract class Drink{
         return price;
     }
 
-    public void order(PaymentStrategy payment, boolean addSugar, boolean addMilk){
+    public void prepare(){
+        System.out.println("Preparing " + name);
+        boil();
+        brew();
+        pourInCup();
+        addExtras();
+        payment.pay(price);
+    }
 
-        double finalPrice = price;
-        if(addSugar) finalPrice += 10;
-        if(addMilk) finalPrice += 20;
-        payment.pay(finalPrice);
+    private void boil(){
+        System.out.println("Boiling water");
+    }
+
+    protected void brew(){
+        System.out.println("Brewing Drink " + name);
+    }
+
+    private void pourInCup(){
+        System.out.println("Pouring " + name + " into cup");
+    }
+
+    protected void addExtras(){
+        System.out.println("Adding extras in a Drink " + name);
     }
 }
 
-// class Coffee extends Drink{
-//     public Coffee() {
-//         this.name = "Coffee";
-//         this.price = 300;
-//     }
-// }
+class Coffee extends Drink{
+    public Coffee(PaymentStrategy payment) {
+        super(payment, "Coffee", 300);
+    }
 
-// class Tea extends Drink{
-//     public Tea() {
-//         this.name = "Tea";
-//         this.price = 200;
-//     }
-// }
+    @Override
+    protected void brew(){
+        System.out.println(" Brewing ground coffee...");
+    }
+}
+
+class Tea extends Drink{
+    public Tea(PaymentStrategy payment) {
+        super(payment, "Tea", 200);
+    }
+
+    @Override
+    protected void brew(){
+        System.out.println(" Brewing ground tea...");
+    }
+}
 
 // abstract class DrinkDecorator {
 //     protected Drink drink;
@@ -77,10 +113,10 @@ public class CoffeeShop {
         // Drink order1 = coffeeFactory.order(new CashPayment(), true, false);
         // order1.prepare();
 
-        PaymentStrategy payment = new CreditCardPayment();
-        payment.pay(300);
+        // PaymentStrategy payment = new CreditCardPayment();
+        // payment.pay(300);
 
-        PaymentStrategy payment2 = new CashPayment();
-        payment2.pay(200);
+        // PaymentStrategy payment2 = new CashPayment();
+        // payment2.pay(200);
     }
 }
